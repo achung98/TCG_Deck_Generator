@@ -44,7 +44,6 @@ async def gen_deck(tpe: TypesSchema) -> GenDeckSchema:
 @app.post('/save-deck', status_code=status.HTTP_200_OK)
 def save_deck(deck: GenDeckSchema):
   db.session.autoflush=True
-  db.session.autocommit=True
 
   # Create new deck with specified type
   new_deck = DecksModel(name=deck.name, type_id=deck.tpe.id)
@@ -61,3 +60,5 @@ def save_deck(deck: GenDeckSchema):
     # Save card to deck  
     deck_card = DecksCardsModel(deck_id=new_deck.id, card_id=card_id, number_of_cards=card.number_of_cards)
     db.session.add(deck_card)
+  
+  db.session.commit()

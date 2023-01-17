@@ -88,7 +88,7 @@ async def pick_trainers(deck: GenDeckModel):
   trainers_card_count = await fetch_card('trainer')
 
   while(deck.total_cards < DECK_CONSTRAINTS['max_cards']):
-    reqs = gen_search_card_requests(DECK_CONSTRAINTS['max_cards'] - deck.total_cards + 1, trainers_card_count['totalCount'], 'trainer')
+    reqs = gen_search_card_requests(DECK_CONSTRAINTS['max_cards'] - deck.total_cards, trainers_card_count['totalCount'], 'trainer')
     trainer_cards = await request_runner(reqs)
 
     for trainer_card in trainer_cards:

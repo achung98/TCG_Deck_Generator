@@ -24,7 +24,7 @@ async def fetch_card(super_type, extra_query = ''):
 
 def gen_search_card_requests(num_of_req, cards_count, super_type, extra_query = ''):
   reqs = []
-  for num in range(1, num_of_req + 1):
+  for num in range(num_of_req):
     page = pick_card_number(cards_count)
     url = f'{TCG_URL}?page={page}&pageSize=1&q=supertype:{super_type} {extra_query}'
     reqs.append(asyncio.ensure_future(make_request(url)))
