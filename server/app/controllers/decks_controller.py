@@ -1,5 +1,5 @@
-from typing import List
-from fastapi import status, HTTPException
+from typing import List, Union
+from fastapi import status, HTTPException, Query
 
 from main import app, db
 from models.decks_model import DecksModel
@@ -15,9 +15,13 @@ from schemas.gen_deck_schema import GenDeckSchema
 from services.deck_builder import pick_pokemons, pick_energies, pick_trainers
 
 @app.get('/decks', status_code=status.HTTP_200_OK)
-def get_decks(type_id: int= None) -> List[DecksSchema]:
-  if(type_id):
-    decks = db.session.query(DecksModel).filter(DecksModel.type_id == type_id).all()
+def get_decks(type_id: Union[List[int], None] = Query(default=None), name: str = None) -> List[DecksSchema]:
+  if(type_id and name):
+    decks = db.session.query(DecksModel).filter(DecksModel.type_id.in_(type_id), DecksModel.name.ilike(f'%{name}%')).order_by(DecksModel.id).all()
+  elif(type_id):
+    decks = db.session.query(DecksModel).filter(DecksModel.type_id.in_(type_id)).all()
+  elif(name):
+    decks = db.session.query(DecksModel).filter(DecksModel.name.ilike(f'%{name}%')).order_by(DecksModel.id).all()
   else:
     decks = db.session.query(DecksModel).all()
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Spinner from "react-text-spinners";
 
 import { BACKEND_URL } from "../constants/constants";
@@ -8,6 +8,7 @@ import GenDeckInterface from "../interfaces/GenDeckInterface";
 import Cards from "../components/Cards";
 
 const GenDeck = () => {
+  const navigate = useNavigate();
   const { state } = useLocation();
   const [generating, setGenerating] = useState(true);
   const [generatedDeck, setGeneratedDeck] = useState<GenDeckInterface>();
@@ -64,7 +65,9 @@ const GenDeck = () => {
       },
       body: JSON.stringify(generatedDeck),
     });
-  }
+
+    navigate("/");
+  };
 
   return (
     <>
