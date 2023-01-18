@@ -2,4 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-//font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+.test {
+  transform: scale(0.9)
+}

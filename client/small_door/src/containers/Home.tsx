@@ -22,6 +22,9 @@ const fetchTypes = async (searchQuery: string = "") => {
 };
 
 const Home = () => {
+  // Initialize colors
+  const typeColors =
+    "bg-Colorless bg-Darkness bg-Dragon bg-Fairy bg-Fighting bg-Fire bg-Grass bg-Lightning bg-Metal bg-Psychic bg-Water";
   const navigate = useNavigate();
   const [decks, setDecks] = useState<DecksInterface[]>([]);
   const [types, setTypes] = useState<TypesInterface[]>([]);
@@ -113,25 +116,28 @@ const Home = () => {
   const createDeckModal = () => (
     <>
       <div
-        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-10 outline-none focus:outline-none"
+        className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
         onClick={() => setShowModal(false)}
       >
-        <div className="relative w-auto my-6 mx-auto max-w-3xl">
-          <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+        <div className="relative w-auto my-6 mx-auto max-w-xl">
+          <div className="border-0 rounded-lg shadow-lg relative flex flex-col justify-center w-full bg-white outline-none focus:outline-none">
             <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
               <h3 className="text-3xl font-semibold">Create Deck</h3>
             </div>
-            <div className="relative p-6 flex-auto">
+            <div className="flex p-6 flex-auto gap-3 flex-wrap justify-start">
               {types
-                ? types.map((tpe) => (
-                    <button
-                      id={tpe.id.toString()}
-                      onClick={() => genDeck(tpe)}
-                      key={tpe.id}
-                    >
-                      {tpe.name}
-                    </button>
-                  ))
+                ? types.map((tpe) => {
+                    return (
+                      <button
+                        id={tpe.id.toString()}
+                        className={`rounded-md border border-${tpe.name} bg-${tpe.name} p-1 mt-2 text-xs font-medium text-white shadow-sm h-fit`}
+                        onClick={() => genDeck(tpe)}
+                        key={tpe.id}
+                      >
+                        {tpe.name}
+                      </button>
+                    );
+                  })
                 : null}
             </div>
           </div>
@@ -269,7 +275,7 @@ const Home = () => {
     filterByTypes.map((filterByType) => (
       <button
         type="button"
-        className="rounded-md border border-sb bg-sb p-1 mt-2 text-xs font-medium text-white shadow-sm h-fit"
+        className={`rounded-md border border-${filterByType.name} bg-${filterByType.name} p-1 mt-2 text-xs font-medium text-white shadow-sm h-fit`}
         key={filterByType.id}
       >
         {filterByType.name}
@@ -296,7 +302,7 @@ const Home = () => {
     <>
       {types ? topBar() : null}
       {showModal ? createDeckModal() : null}
-      {decks ? renderDecks(decks) : null}
+      {decks ? renderDecks(decks) : <div className="flex justify-center mt-5"><p>No Decks Found</p></div>}
     </>
   );
 };

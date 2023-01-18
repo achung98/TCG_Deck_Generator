@@ -13,15 +13,15 @@ const Decks = ({ deckProps, index}: IProps) => {
   return (
     <div
       id={deckProps.id.toString()}
-      className="flex flex-col items-center px-2 py-2 xl:w-1/5 hover:scale-90 ease-in-out duration-400"
+      className="flex flex-col items-center px-2 py-5 xl:w-1/4 hover:scale-90 ease-in-out duration-400"
       key={index}
       onClick={() => fetchCards(deckProps.id)}
     >
-      <p>{deckProps.name}</p>
+      <p className="font-def text-2xl font-bold">{deckProps.name}</p>
       <img
         src={deckProps.tpe.img}
         alt={deckProps.tpe.name}
-        className="h-96 shadow-2xl rounded-2xl"
+        className="h-[32rem] shadow-2xl rounded-2xl"
       />
     </div>
   );

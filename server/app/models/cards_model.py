@@ -8,6 +8,7 @@ class CardsModel(Base):
   id = Column(String, primary_key=True, index=True)
   name = Column(String)
   img = Column(String)
+  where_to_buy = Column(String)
 
   def __repr__(self):
     return f'<Card "{self.name}">'

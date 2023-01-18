@@ -15,7 +15,7 @@ DECK_CONSTRAINTS = {
   'energy': 10,
 }
 
-CARD_DATA_SELECT_QUERY = 'select=id,name,images,evolvesFrom,evolvesTo'
+CARD_DATA_SELECT_QUERY = 'select=id,name,images,tcgplayer,evolvesFrom,evolvesTo'
 
 async def pick_pokemon(pokemon_card, tpe, picks, picked, form = ''):
   data = pokemon_card['data']
@@ -30,7 +30,7 @@ async def pick_pokemon(pokemon_card, tpe, picks, picked, form = ''):
   if(res['name'] in picked):
     return
 
-  card = CardsModel(id=res['id'], name=res['name'], img=res['images']['large'])
+  card = CardsModel(id=res['id'], name=res['name'], img=res['images']['large'], where_to_buy=res['tcgplayer']['url'] if 'tcgplayer' in res else '')
 
   if(form == 'from'):
     picks.appendleft(card)
@@ -66,7 +66,8 @@ async def pick_pokemons(deck: GenDeckModel):
           if id not in deck.cards:
             deck.cards[id] = {
               'card': pick,
-              'number_of_cards': 1
+              'number_of_cards': 1,
+              'where_to_buy': pick.where_to_buy
             }
             deck.total_cards += 1
           elif deck.cards[id]['number_of_cards'] < DECK_CONSTRAINTS['repeats']:
@@ -75,11 +76,12 @@ async def pick_pokemons(deck: GenDeckModel):
 
 async def pick_energies(deck: GenDeckModel):
   energy = await fetch_card('energy', f'name:"{deck.tpe.name} Energy"&{CARD_DATA_SELECT_QUERY}')
-  card = CardsModel(id=energy['data'][0]['id'], name=energy['data'][0]['name'], img=energy['data'][0]['images']['large'])
+  card = CardsModel(id=energy['data'][0]['id'], name=energy['data'][0]['name'], img=energy['data'][0]['images']['large'], where_to_buy=energy['data'][0]['tcgplayer']['url'] if 'tcgplayer' in energy['data'][0] else '')
 
   deck.cards[card.id] = {
     'card': card,
-    'number_of_cards': 10
+    'number_of_cards': 10,
+    'where_to_buy': card.where_to_buy
   }
 
   deck.total_cards += 10
@@ -92,12 +94,13 @@ async def pick_trainers(deck: GenDeckModel):
     trainer_cards = await request_runner(reqs)
 
     for trainer_card in trainer_cards:
-      card = CardsModel(id=trainer_card['data'][0]['id'], name=trainer_card['data'][0]['name'], img=trainer_card['data'][0]['images']['large'])
+      card = CardsModel(id=trainer_card['data'][0]['id'], name=trainer_card['data'][0]['name'], img=trainer_card['data'][0]['images']['large'], where_to_buy=trainer_card['data'][0]['tcgplayer']['url'] if 'tcgplayer' in trainer_card['data'][0] else '')
 
       if(card.id not in deck.cards):
         deck.cards[card.id] = {
           'card': card,
-          'number_of_cards': 1
+          'number_of_cards': 1,
+          'where_to_buy': card.where_to_buy
         }
         deck.total_cards += 1
       elif(deck.cards[card.id]['number_of_cards'] < DECK_CONSTRAINTS['repeats']):

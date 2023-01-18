@@ -29,7 +29,7 @@ def get_decks(type_id: Union[List[int], None] = Query(default=None), name: str =
 
 @app.get('/decks/{deck_id}')
 def get_deck_contents(deck_id: int) -> List[DecksCardsSchema]: 
-  cards = db.session.query(DecksCardsModel).filter(DecksCardsModel.deck_id == deck_id).all()
+  cards = db.session.query(DecksCardsModel).filter(DecksCardsModel.deck_id == deck_id).order_by(DecksCardsModel.id).all()
 
   if(not cards):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Deck information not found')
@@ -58,7 +58,7 @@ def save_deck(deck: GenDeckSchema):
     # Save card if it doesn't exist
     temp_card = db.session.query(CardsModel).filter(CardsModel.id == card_id).first()
     if(not temp_card):
-      new_card = CardsModel(id=card_id, name=card.card.name, img=card.card.img)
+      new_card = CardsModel(id=card_id, name=card.card.name, img=card.card.img, where_to_buy=card.card.where_to_buy)
       db.session.add(new_card)
 
     # Save card to deck  

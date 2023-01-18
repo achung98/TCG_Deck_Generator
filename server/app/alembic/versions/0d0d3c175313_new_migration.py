@@ -1,8 +1,8 @@
 """New migration
 
-Revision ID: bbc1ce48db09
+Revision ID: 0d0d3c175313
 Revises: 
-Create Date: 2023-01-16 23:53:20.851298
+Create Date: 2023-01-18 18:15:26.425575
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'bbc1ce48db09'
+revision = '0d0d3c175313'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +22,7 @@ def upgrade() -> None:
     sa.Column('id', sa.String(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('img', sa.String(), nullable=True),
+    sa.Column('where_to_buy', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_cards_id'), 'cards', ['id'], unique=False)
@@ -41,12 +42,13 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_decks_id'), 'decks', ['id'], unique=False)
     op.create_table('decks_cards',
-    sa.Column('deck_id', sa.Integer(), nullable=False),
-    sa.Column('card_id', sa.String(), nullable=False),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('deck_id', sa.Integer(), nullable=True),
+    sa.Column('card_id', sa.String(), nullable=True),
     sa.Column('number_of_cards', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['card_id'], ['cards.id'], ),
     sa.ForeignKeyConstraint(['deck_id'], ['decks.id'], ),
-    sa.PrimaryKeyConstraint('deck_id', 'card_id')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_decks_cards_card_id'), 'decks_cards', ['card_id'], unique=False)
     op.create_index(op.f('ix_decks_cards_deck_id'), 'decks_cards', ['deck_id'], unique=False)
